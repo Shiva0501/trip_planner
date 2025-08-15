@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | TripPlanner</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard">
+    <div class="sidebar">
+        <div class="logo">TripPlanner</div>
+        <nav>
+            <a href="#" class="active"><span>🏠</span> Dashboard</a>
+            <a href="#"><span>✈️</span> My Trips</a>
+            <a href="#"><span>📅</span> Itineraries</a>
+            <a href="#"><span>👥</span> Travelers</a>
+            <a href="#"><span>⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar">U</div>
+            <div class="user-info">
+                <div class="name">User Name</div>
+                <div class="status">Online</div>
+            </div>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <header>
+            <h1>My Dashboard</h1>
+            <div class="header-actions">
+                <button id="createTripBtn" class="btn-primary">+ New Trip</button>
+                <div class="notifications">
+                    <span>🔔</span>
+                </div>
+                <div class="profile">
+                    <div class="avatar">U</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="upcoming-trips">
+            <h2>Upcoming Trips</h2>
+            <div class="trips-grid" id="tripsContainer">
+                <!-- Trips will be dynamically added here -->
+                <div class="empty-state">
+                    <p>You don't have any upcoming trips yet.</p>
+                    <button class="btn-primary" id="startPlanningBtn">Start Planning</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">📅</div>
+                    <div class="activity-content">
+                        <p>Added new activity to "Summer Vacation 2023"</p>
+                        <span class="time">2 hours ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">👥</div>
+                    <div class="activity-content">
+                        <p>Invited Sarah to "Hawaii Trip"</p>
+                        <span class="time">1 day ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📷</div>
+                    <div class="activity-content">
+                        <p>Added 5 photos to "Paris Getaway"</p>
+                        <span class="time">3 days ago</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- New Trip Modal -->
+    <div id="newTripModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create New Trip</h2>
+            <form id="newTripForm">
+                <div class="form-group">
+                    <label for="tripName">Trip Name</label>
+                    <input type="text" id="tripName" placeholder="e.g. Summer Vacation 2023" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" id="destination" placeholder="e.g. Paris, France" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tripType">Trip Type</label>
+                        <select id="tripType">
+                            <option value="leisure">Leisure</option>
+                            <option value="business">Business</option>
+                            <option value="adventure">Adventure</option>
+                            <option value="family">Family</option>
+                            <option value="honeymoon">Honeymoon</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tripImage">Cover Image</label>
+                    <input type="file" id="tripImage" accept="image/*">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="4" placeholder="Tell us about your trip..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelTripBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Trip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Trip Detail Modal -->
+    <div id="tripDetailModal" class="modal">
+        <div class="modal-content trip-detail-content">
+            <div class="trip-header">
+                <div class="trip-cover" id="tripCoverImage">
+                    <!-- Background image will be set via JS -->
+                </div>
+                <div class="trip-info">
+                    <h2 id="tripDetailName">Trip Name</h2>
+                    <p id="tripDetailDestination">Destination</p>
+                    <p id="tripDetailDates">Dates</p>
+                    <p id="tripDetailType">Trip Type</p>
+                </div>
+                <span class="close close-trip">&times;</span>
+            </div>
+            
+            <div class="trip-body">
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="itinerary">Itinerary</button>
+                    <button class="tab-btn" data-tab="travelers">Travelers</button>
+                    <button class="tab-btn" data-tab="photos">Photos</button>
+                    <button class="tab-btn" data-tab="notes">Notes</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Itinerary Tab -->
+                    <div id="itinerary" class="tab-pane active">
+                        <div class="itinerary-header">
+                            <h3>Daily Itinerary</h3>
+                            <button id="addDayBtn" class="btn-primary">Add Day</button>
+                        </div>
+                        <div id="itineraryDays" class="itinerary-days">
+                            <!-- Days will be added dynamically -->
+                            <div class="empty-state">
+                                <p>No itinerary days added yet.</p>
+                                <button class="btn-primary" id="addFirstDayBtn">Add First Day</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Travelers Tab -->
+                    <div id="travelers" class="tab-pane">
+                        <div class="travelers-header">
+                            <h3>Travelers</h3>
+                            <button id="addTravelerBtn" class="btn-primary">Add Traveler</button>
+                        </div>
+                        <div id="travelersList" class="travelers-list">
+                            <!-- Travelers will be added dynamically -->
+                            <div class="traveler-item">
+                                <div class="traveler-avatar">U</div>
+                                <div class="traveler-info">
+                                    <h4>User Name</h4>
+                                    <p>Main traveler</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Photos Tab -->
+                    <div id="photos" class="tab-pane">
+                        <div class="photos-header">
+                            <h3>Photo Gallery</h3>
+                            <button id="uploadPhotosBtn" class="btn-primary">Upload Photos</button>
+                        </div>
+                        <div id="photosGrid" class="photos-grid">
+                            <!-- Photos will be added dynamically -->
+                            <div class="empty-state">
+                                <p>No photos added yet.</p>
+                                <button class="btn-primary" id="uploadFirstPhotoBtn">Upload First Photo</button>
+                            </div>
+                        </div>
+                        <input type="file" id="photoUpload" accept="image/*" multiple style="display: none;">
+                    </div>
+                    
+                    <!-- Notes Tab -->
+                    <div id="notes" class="tab-pane">
+                        <div class="notes-header">
+                            <h3>Notes</h3>
+                            <button id="addNoteBtn" class="btn-primary">Add Note</button>
+                        </div>
+                        <div id="notesList" class="notes-list">
+                            <!-- Notes will be added dynamically -->
+                            <div class="empty-state">
+                                <p>No notes added yet.</p>
+                                <button class="btn-primary" id="addFirstNoteBtn">Add First Note</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Traveler Modal -->
+    <div id="addTravelerModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-traveler">&times;</span>
+            <h2>Add Traveler</h2>
+            <form id="addTravelerForm">
+                <div class="form-group">
+                    <label for="travelerName">Name</label>
+                    <input type="text" id="travelerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="travelerEmail">Email</label>
+                    <input type="email" id="travelerEmail">
+                </div>
+                <div class="form-group">
+                    <label for="travelerRole">Role</label>
+                    <select id="travelerRole">
+                        <option value="primary">Primary Traveler</option>
+                        <option value="secondary">Secondary Traveler</option>
+                        <option value="child">Child</option>
+                        <option value="guest">Guest</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="travelerAvatar">Profile Picture</label>
+                    <input type="file" id="travelerAvatar" accept="image/*">
+                    <div id="avatarPreview" class="image-preview"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelTravelerBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Traveler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
