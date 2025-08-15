@@ -1,2 +1,2 @@
-# trip_planner
-
+# trip_planer
+A normal basic trip planner
